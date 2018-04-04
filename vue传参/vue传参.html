@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>传参练习</title>
+    <script src="../js/vue.min.js"></script>
+    <script src="../js/vue-router.js"></script>
+</head>
+<body>
+<div id="container">
+    <p>{{msg}}</p>
+    <!-- -->
+    <router-view></router-view>
+</div>
+<script>
+    //创建产品列表组件
+    var myList = Vue.component("product-list",{
+        //保存产品列表的数据
+        data:function(){
+            return{
+                productList:["苹果","华为","三星","小米","vivo"]
+            }
+        },
+        template:`
+    <div>
+     <h4>这是列表页</h4>
+     <ul>
+      <li v-for="(tmp,index) in productList">
+      //将index传递过去
+       <router-link v-bind:to="'/detail/'+index">{{tmp}}</router-link>
+      </li>
+     </ul>
+    </div>
+   `
+    })
+    //详情页组件
+    var myDetail = Vue.component("product-detail",{
+        //保存传递过来的index
+        data:function(){
+            return{
+                myIndex:""
+            }
+        },
+        //在挂载完成后,将接收到的index赋值给myIndex
+        mounted:function(){
+            this.myIndex = this.$route.params.id;
+        },
+        template:`
+    <div>
+     <h4>这是详情页</h4>
+     <p>这是id为：{{myIndex}}的产品</p>
+    </div>
+   `
+    })
+    //页面找不到的时候
+    var NotFound = Vue.component("not-found",{
+        template:`
+    <div>
+     <h1>404 Page Not Found</h1>
+    </div>
+   `
+    })
+    // 配置路由词典
+    const myRoutes = [
+        {path:"",component:myList},
+        {path:"/list",component:myList},
+        {path:"/detail/:id",component:myDetail},
+        {path:"*",component:NotFound},
+    ]
+    const myRouter = new VueRouter({
+        routes:myRoutes
+    })
+    new Vue({
+        router:myRouter,
+        el:"#container",
+        data:{
+            msg:"Hello VueJs"
+        }
+    })
+</script>
+</body>
+</html>

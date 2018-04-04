@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../js/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script>
+        // ajax读取xml格式数据：
+        $(function(){
+            //alert(111)
+            // 方法一
+            $.ajax({
+                type:"POST",
+                url:"demo.xml",
+                dataType:"xml",
+                success:function(data){
+                    // $(data).find("root").find("item").each(function(i,item){
+                    //     var strNowEngineer=$(item).find("strNowEngineer").text();
+                    //     var completeNum=$(item).find("completeNum").text();
+                    //     var InTreatmentNum=$(item).find("InTreatmentNum").text();
+                    //     $("#datatable").append('<tr><td>'+FUN_CODE+'</td><td>'+USER_ID+'</td><td>'+SIGN_TYPE+'</td><td>'+SIGN+'</td><td>'+REQ_ENCRYPTED+'</td></tr>');
+                    // })
+                    $(data).find("ROOT").each(function(i,ROOT){
+                        var FUN_CODE=$(ROOT).find("FUN_CODE").text();
+                        var USER_ID=$(ROOT).find("USER_ID").text();
+                        var SIGN_TYPE=$(ROOT).find("SIGN_TYPE").text();
+                        var SIGN=$(ROOT).find("SIGN").text();
+                        var REQ_ENCRYPTED=$(ROOT).find("REQ_ENCRYPTED").text();
+                        $("#datatable").append('<tr><td>'+FUN_CODE+'</td><td>'+USER_ID+'</td><td>'+SIGN_TYPE+'</td><td>'+SIGN+'</td><td>'+REQ_ENCRYPTED+'</td></tr>');
+                    })
+                },
+                error:function(){
+                    alert("failed");
+                }
+            })
+            // 方法二
+            // $.get('data.xml', function(data) {
+            //     $(data).find("root").find("item").each(function(i,item){
+            //         var strNowEngineer =$(item).find("strNowEngineer").text();
+            //         var completeNum=$(item).find("completeNum").text();
+            //         var InTreatmentNum=$(item).find("InTreatmentNum").text();
+            //         $("#datatable").append('<tr><td>'+strNowEngineer+'</td><td>'+completeNum+'</td><td>'+InTreatmentNum+'</td></tr>');
+            //     })
+            // });
+            // 方法三
+            // var xhr;
+            // if(window.XMLHttpRequest){
+            //     xhr=new XMLHttpRequest();
+            // }else{
+            //     if(widdow.ActiveXObject){
+            //         xhr=new ActiveXObject("Msxml2.XMLHTTP");
+            //     }
+            //     else{
+            //         xhr=new ActiveXObject("Microsoft.XMLHTTP");
+            //     }
+            // }
+            // xhr.open("POST","data.xml",true);
+            // xhr.onreadystatechange=function(data){
+            //     if(xhr.readyState==4 && xhr.status==200){
+            //         var data=xhr.responseXML;
+            //         $(data).find("root").find("item").each(function(i,item){
+            //             var strNowEngineer =$(item).find("strNowEngineer").text();
+            //             var completeNum=$(item).find("completeNum").text();
+            //             var InTreatmentNum=$(item).find("InTreatmentNum").text();
+            //             $("#datatable").append('<tr><td>'+strNowEngineer+'</td><td>'+completeNum+'</td><td>'+InTreatmentNum+'</td></tr>');
+            //         })
+            //     }
+            // }
+            // xhr.send();
+        })
+    </script>
+</head>
+<body>
+<div class="topnavright" id="top_user">
+    <table id="datatable" border="1">
+
+    </table>
+</div>
+</body>
+</html>

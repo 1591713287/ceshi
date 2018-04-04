@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../js/vue.min.js"></script>
+    <script src="../js/vue-resource.js"></script>
+    <title>Title</title>
+</head>
+<style>
+    .red{
+        color:red;
+        transition: .3s;
+    }
+</style>
+<body>
+<div id="box">
+    <p>{{showList.title}}</p>
+    <ul>
+        <li v-for="(item,index) in showList.subjects" :class="{red:index==indexPrev}"
+            @mouseover="changeColor(index)">{{item.title}}
+        </li>
+    </ul>
+</div>
+<script>
+    var vm = new Vue({
+        el:'#box',
+        data:{
+            showList:[],
+            indexPrev:0
+        },
+        created(){
+            this.$http.jsonp('https://api.douban.com//v2/movie/in_theaters')
+                .then(res => {
+                    this.showList = res.data
+                    console.log(this.showList)
+                    console.log(this.showList.count)
+                    //总页码
+                    // this.allPage = Math.ceil((this.showList.count)/(this.Pagecount))
+                    // console.log(this.allPage)
+                }) .catch(err => {
+
+            })
+        },
+        methods:{
+            changeColor(index){
+                this.indexPrev=index
+                // this.$router.push({
+                //     name:'xxxx',
+                //     params:{
+                //
+                //     }
+                // })
+            }
+        }
+    })
+</script>
+</body>
+</html>

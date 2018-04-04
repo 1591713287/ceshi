@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <script type="text/javascript" src="../js/vue.min.js"></script>
+    <script type="text/javascript" src="../js/vue-resource.js"></script>
+    <style>
+        .page-bar{
+            margin:40px;
+        }
+        ul,li{
+            margin: 0px;
+            padding: 0px;
+        }
+        li{
+            list-style: none
+        }
+        .page-bar li:first-child>a {
+            margin-left: 0px
+        }
+        .page-bar a{
+            border: 1px solid #ddd;
+            text-decoration: none;
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            cursor: pointer
+        }
+        .page-bar a:hover{
+            background-color: #eee;
+        }
+        .page-bar a.banclick{
+            cursor:not-allowed;
+        }
+        .page-bar .active a{
+            color: #fff;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+        .page-bar i{
+            font-style:normal;
+            color: #d44950;
+            margin: 0px 4px;
+            font-size: 12px;
+        }
+        .textColor{
+            background-color: red;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="page-bar">
+    <p>{{showList.title}}</p>
+    <ul>
+        <li :class="{'textColor':listColor}" v-for="(item,index) in showList.subjects" @click="fn(index)">{{item.title}} </li>
+    </ul>
+
+    <div>
+        <ul>
+            <li v-if="cur>1"><a @click="cur--,pageClick(cur)">上一页</a></li>
+            <li v-if="cur==1"><a class="banclick">上一页</a></li>
+            <li  v-for="index in allPage"  :class="{ 'active': cur == index}">
+                <a :class="{textColor:index==indexPrev}" @click="btnClick(index)">{{ index }}</a>
+            </li>
+            <li v-if="cur!=allPage"><a @click="cur++,pageClick(cur)">下一页</a></li>
+            <li v-if="cur == allPage"><a class="banclick">下一页</a></li>
+            <li><a>共<i>{{allPage}}</i>页</a></li>
+        </ul>
+    </div>
+    <!--<div>-->
+        <!--<p @click="sliceArray">数组分割</p>-->
+    <!--</div>-->
+</div>
+<script type="text/javascript">
+    var pageBar = new Vue({
+        el: '.page-bar',
+        data: {
+            //all: 8, //总页数
+            cur: 1,//当前页码
+            PageUpshow:false,
+            PageDownshow:false,
+            PageNowshow:false,
+            Pagecount: 2,//每页要显示的记录数
+            allPage:'', //总页码 10
+            showList:'',
+            List:[1,2,3,4,5,6,7,8],
+            listColor:false,
+            indexPrev:0
+        },
+        created(){
+            this.$http.jsonp('https://api.douban.com//v2/movie/in_theaters')
+                .then(res => {
+                    this.showList = res.data
+                    console.log(this.showList)
+                    console.log(this.showList.count)
+                    //总页码
+                    this.allPage = Math.ceil((this.showList.count)/(this.Pagecount))
+                    console.log(this.allPage)
+            }) .catch(err => {
+
+            })
+
+
+        },
+        watch: {
+            cur: function(oldValue , newValue){
+                console.log(arguments);
+            }
+        },
+        methods: {
+            btnClick: function(index,data){//页码点击事件
+                // var _this=this
+                this.indexPrev=index
+                console.log(index)
+                // this.listColor = true
+                // console.log( this.listColor)
+
+
+                if(data != this.cur){
+                    this.cur = data
+                }
+            },
+            pageClick: function(cur){
+                console.log('现在在'+cur+'页');
+
+            },
+            fn(index){
+                console.log(index)
+                this.listColor = true
+                console.log( this.listColor)
+            },
+
+        //     sliceArray (showListarray, size) {
+        //         let arrList = this.List
+        //         var result = [];
+        //         for (var x = 0; x < Math.ceil(arrList.length / 2); x++) {
+        //             var start = x * size;
+        //             var end = start + size;
+        //             result.push(arrList.slice(start, end));
+        //             console.log(result)
+        //     }
+        //
+        // }
+    },
+
+        computed: {
+            indexs: function(){
+                var left = 1;
+                var right = this.all;
+                var ar = [];
+                if(this.all>= 5){
+                    if(this.cur > 3 && this.cur <= this.all-2){
+                        left = this.cur - 2
+                        right = this.cur + 2
+                    }else{
+                        if(this.cur<=3){
+                            left = 1
+                            right = 5
+                        }else{
+                            right = this.all
+                            left = this.all -4
+                        }
+                    }
+                }
+                while (left <= right){
+                    ar.push(left)
+                    left ++
+                }
+                return ar
+            }
+
+        }
+    })
+</script>
+</body>
+</html>
